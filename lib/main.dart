@@ -1,6 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_firebase_graphql/graphql_client.dart';
+import 'package:graphql/client.dart';
 
-void main() {
+import 'authentication.dart';
+import 'firebase_options.dart';
+
+void main() async {
+// initialize firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  if (kDebugMode) {
+    try {
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   runApp(const MyApp());
 }
 
@@ -56,6 +79,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  late final GraphQLClient client;
+  late String addUserMutation;
+  late MutationOptions options;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -112,11 +143,37 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            ElevatedButton(
+              onPressed: () async {
+                addUserMutation = await rootBundle
+                    .loadString('lib/graphql_queries/add_user.graphql');
+
+                options = MutationOptions(
+                  document: gql(addUserMutation),
+                  variables: const <String, dynamic>{
+                    // the variable put here must match the query variable ($user)
+                    'user': {
+                      'name': 'Jane Doe',
+                      'description': 'related to John Doe',
+                    }
+                  },
+                );
+
+                final QueryResult result = await client.mutate(options);
+                debugPrint('${result.data}');
+              },
+              child: const Text('Fetch DATA'),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () async {
+          Auth auth = Auth();
+          await auth.logIn('dash@email.com', 'dashword');
+
+          client = graphQLClientInit('${auth.user!.getIdToken()}');
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

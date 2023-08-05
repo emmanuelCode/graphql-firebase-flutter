@@ -1,0 +1,8 @@
+type User {
+  id: ID!
+  name: String!
+  description: String
+}
+
+
+# Dgraph.Authorization {"Header":"X-My-App-Auth", "jwkurl":"https://firebaseappcheck.googleapis.com/v1/jwks", "Namespace":"https://xyz.io/jwt/claims","Audience":["graphql-firebase-flutter"], "ClosedByDefault":true}
