@@ -1,16 +1,15 @@
 # flutter_firebase_graphql
 
-A new Flutter project.
+A Flutter Project that uses firebase authentification with graphql backend
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Run this command to start the emulator:
+`firebase emulators:start`
 
-A few resources to get you started if this is your first Flutter project:
+To run the graphql backend run this command:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+`sudo docker run --rm -it -p 8080:8080 -p 9080:9080 dgraph/standalone:latest`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+push schema with this command using curl:
+`curl -X POST localhost:8080/admin/schema --data-binary '@schema.graphql'`

@@ -79,7 +79,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  late final GraphQLClient client;
+  late GraphQLClient client;
   late String addUserMutation;
   late MutationOptions options;
 
@@ -161,6 +161,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 final QueryResult result = await client.mutate(options);
                 debugPrint('${result.data}');
+                if (result.hasException) {
+                    debugPrint('${result.exception}');
+
+                }
               },
               child: const Text('Fetch DATA'),
             )
@@ -171,8 +175,15 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           Auth auth = Auth();
           await auth.logIn('dash@email.com', 'dashword');
+          String? token = await auth.user!.getIdToken();
+          IdTokenResult? tokenResult = await auth.user!.getIdTokenResult();
 
-          client = graphQLClientInit('${auth.user!.getIdToken()}');
+          
+
+          client = graphQLClientInit('$token');
+          debugPrint('$token');
+          debugPrint(tokenResult.toString());
+
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
