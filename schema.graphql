@@ -1,7 +1,9 @@
-type User {
+type Post {
   id: ID!
-  name: String!
-  description: String
+  title: String!
+  imageUrl: String!
+  text: String!
+  DateTime: String!
 }
 
 
