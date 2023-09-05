@@ -13,3 +13,6 @@ To run the graphql backend run this command:
 
 push schema with this command using curl:
 `curl -X POST localhost:8080/admin/schema --data-binary '@schema.graphql'`
+
+generate or regenerate riverpod/freezed "part" files:
+`dart run build_runner build -d`

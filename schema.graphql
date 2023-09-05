@@ -3,7 +3,7 @@ type Post {
   title: String!
   imageUrl: String!
   text: String!
-  DateTime: String!
+  dateTime: DateTime!
 }
 
 

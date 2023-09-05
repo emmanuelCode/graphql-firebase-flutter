@@ -1,0 +1,11 @@
+mutation addPost($post: [AddPostInput!]!) {
+  addPost(input: $post) {
+    post {
+      id 
+      title
+      imageUrl
+      text
+      dateTime
+    }
+  }
+}
