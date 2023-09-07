@@ -12,6 +12,7 @@ part 'auth.g.dart';
 @Riverpod(keepAlive: true) // so that the token variable doesn't get disposed
 class Auth extends _$Auth {
   String? token;
+  String? username;
 
   @override
   User? build() => FirebaseAuth.instance.currentUser;
@@ -31,13 +32,15 @@ class Auth extends _$Auth {
   }
 
   Future<void> signUp(String name, String email, String password) async {
+    username = name;
     final credential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
     if (credential.user != null) {
       state = credential.user!;
       token = await state!.getIdToken();
+      // will not be available on account creation (state!.displayName)
       await state!.updateDisplayName(name);
-      debugPrint('logged in as ${state!.displayName}');
+      debugPrint('logged in as $username');
       debugPrint('TOKEN: $token}');
     } else {
       debugPrint('no user!');
