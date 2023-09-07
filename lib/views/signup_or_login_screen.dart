@@ -69,13 +69,18 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                         ? await _auth.logIn('dash@email.com', 'dashword')
                         : await _auth.signUp(
                             'Dash', 'dash@email.com', 'dashword');
-          
+
                     if (_auth.token != null && context.mounted) {
-                      Navigator.push(
+                      await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const PostsList()));
                     }
+                    if(context.mounted) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(content: Text('Sign Out')));
+                    }
+
                   },
                   child: Text(_login ? 'Login' : 'SignUp'),
                 ),

@@ -24,6 +24,7 @@ class Auth extends _$Auth {
     if (credential.user != null) {
       state = credential.user!;
       token = await state!.getIdToken();
+      username = state!.displayName;
       debugPrint('TOKEN $token}');
       debugPrint('logged in as ${state!.displayName}');
     } else {
