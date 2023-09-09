@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_graphql/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/auth.dart';
@@ -20,7 +21,46 @@ class PostsList extends ConsumerWidget {
           appBar: AppBar(
             title: Text('Hello $userName'),
           ),
-          body: ListView(),
+          body: Column(
+            children: [
+              //todo fix
+              // FutureBuilder(
+              //     future: ref.watch(userPostsProvider.notifier).getPosts(),
+              //     builder: (context, AsyncSnapshot<List<Post>> posts) {
+              //       return ListView.builder(
+              //         shrinkWrap: true,
+              //         itemBuilder: (BuildContext context, int index) {
+              //           if (posts.hasData) {
+              //             final post = posts.data![index];
+              //             return PostCard(
+              //               title: post.title,
+              //               imageUrl: post.imageUrl,
+              //               created: post.dateTime,
+              //             );
+              //           }
+              //
+              //           if (posts.hasError) {
+              //             debugPrint('${posts.error}');
+              //           }
+              //
+              //           return const CircularProgressIndicator.adaptive();
+              //         },
+              //       );
+              //     }),
+              OutlinedButton(
+                  onPressed: () async {
+                   // await userPosts.getPosts();
+                  },
+                  child: const Text('get Posts')),
+              OutlinedButton(
+                  onPressed: () async {
+                    final userPosts = ref.read(userPostsProvider.notifier);
+
+                    return await userPosts.createPost();
+                  },
+                  child: const Text('create Post')),
+            ],
+          ),
         ));
   }
 }
@@ -47,6 +87,7 @@ class PostCard extends StatelessWidget {
         ListTile(
           title: Text(title),
           subtitle: Text(created.toIso8601String()),
+          onTap: () {},
         ),
       ],
     );

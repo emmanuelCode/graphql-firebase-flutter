@@ -6,7 +6,7 @@ part of 'auth.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$graphQLClientHash() => r'b51c0b2c43bdb23f4b2314a0bb08d966cb2c6c72';
+String _$graphQLClientHash() => r'e5988c9b0bc70713f7f53e0bc623fa020f938f68';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -155,7 +155,7 @@ class _GraphQLClientProviderElement
   String get token => (origin as GraphQLClientProvider).token;
 }
 
-String _$authHash() => r'bf02e36a8189eb8920d3f83dcfe149591acec779';
+String _$authHash() => r'75e6919b9cc3ab094ccf2985c57b1b2d51a5d4d6';
 
 /// See also [Auth].
 @ProviderFor(Auth)
@@ -170,4 +170,4 @@ final authProvider = NotifierProvider<Auth, User?>.internal(
 
 typedef _$Auth = Notifier<User?>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

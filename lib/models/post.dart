@@ -28,9 +28,9 @@ class UserPosts extends _$UserPosts {
 
   @override
   Post build() {
-    String? token = ref.read(authProvider.notifier).token;
+    String? token = ref.watch(authProvider.notifier).token;
     debugPrint('TOKEN #2 $token');
-    _client = ref.read(graphQLClientProvider(token!));
+    _client = ref.watch(graphQLClientProvider(token!));
 
     return Post(
       id: '',
@@ -66,5 +66,33 @@ class UserPosts extends _$UserPosts {
     if (result.hasException) {
       debugPrint('${result.exception}');
     }
+  }
+
+  // get all posts entered
+  Future<List<Post>> getPosts() async {
+    final String getPostsQuery = await rootBundle
+        .loadString('lib/graphql_queries/get_list_posts.graphql');
+
+    final QueryOptions options = QueryOptions(
+      document: gql(getPostsQuery),
+      variables: const <String, dynamic>{
+        // the variable put here must match the query variable
+      },
+    );
+
+    //get the graphql client to perform queries and mutation
+    final QueryResult result = await _client.query(options);
+    debugPrint('${result.data}');
+    if (result.hasException) {
+      debugPrint('${result.exception}');
+    }
+
+    final List<dynamic> queryArray = result.data?['queryPost']; // array..
+
+    List<Post> posts = queryArray.map((e) => Post.fromJson(e)).toList();
+
+    print('ALL POSTS: $posts');
+
+    return posts;
   }
 }

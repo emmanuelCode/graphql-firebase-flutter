@@ -1,6 +1,5 @@
 // TODO to create login form and email
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_graphql/models/post.dart';
 import 'package:flutter_firebase_graphql/views/list_post_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -80,17 +79,9 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                       ScaffoldMessenger.of(context)
                           .showSnackBar(const SnackBar(content: Text('Sign Out')));
                     }
-
                   },
                   child: Text(_login ? 'Login' : 'SignUp'),
                 ),
-                OutlinedButton(
-                    onPressed: () async =>
-                        await ref.read(userPostsProvider.notifier).createPost(),
-                    child: const Text('Test')),
-                OutlinedButton(
-                    onPressed: () async => await _auth.logOut(),
-                    child: const Text('LogOut'))
               ],
             ),
           ),

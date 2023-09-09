@@ -20,9 +20,9 @@ class Auth extends _$Auth {
   Future<void> logIn(String email, String password) async {
     final credential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
-    debugPrint('STATE: $state');
     if (credential.user != null) {
       state = credential.user!;
+      debugPrint('STATE: $state');
       token = await state!.getIdToken();
       username = state!.displayName;
       debugPrint('TOKEN $token}');

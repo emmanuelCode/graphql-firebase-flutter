@@ -1,0 +1,9 @@
+query getPosts(){
+  queryPost {
+    id
+    title
+    imageUrl
+    text
+    dateTime
+  }
+}
