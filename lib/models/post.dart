@@ -27,23 +27,20 @@ class UserPosts extends _$UserPosts {
   late GraphQLClient _client;
 
   @override
-  Post build() {
+  Future<List<Post>> build() async {
     String? token = ref.watch(authProvider.notifier).token;
     debugPrint('TOKEN #2 $token');
     _client = ref.watch(graphQLClientProvider(token!));
 
-    return Post(
-      id: '',
-      text: '',
-      imageUrl: '',
-      title: '',
-      dateTime: DateTime.now(),
-    );
+    return _getPosts();
   }
 
   // write queries methods (ADD, UPDATE, READ, DELETE) ...
 
   Future<void> createPost() async {
+    // set the state to loading
+    state = const AsyncValue.loading();
+
     final String addPostMutation =
         await rootBundle.loadString('lib/graphql_queries/add_post.graphql');
 
@@ -60,16 +57,23 @@ class UserPosts extends _$UserPosts {
       },
     );
 
-    //get the graphql client to perform queries and mutation
-    final QueryResult result = await _client.mutate(options);
-    debugPrint('${result.data}');
-    if (result.hasException) {
-      debugPrint('${result.exception}');
-    }
+    state = await AsyncValue.guard(() async {
+      //get the graphql client to perform queries and mutation
+      final QueryResult result = await _client.mutate(options);
+
+      if (result.hasException) {
+        debugPrint('${result.exception}');
+      }
+      debugPrint('ADDED: ${result.data}');
+
+      return _getPosts();
+    });
   }
 
   // get all posts entered
-  Future<List<Post>> getPosts() async {
+  // this will be private as I need it to reload the list internally
+  // inspired by : https://docs-v2.riverpod.dev/docs/providers/notifier_provider
+  Future<List<Post>> _getPosts() async {
     final String getPostsQuery = await rootBundle
         .loadString('lib/graphql_queries/get_list_posts.graphql');
 
@@ -82,16 +86,18 @@ class UserPosts extends _$UserPosts {
 
     //get the graphql client to perform queries and mutation
     final QueryResult result = await _client.query(options);
-    debugPrint('${result.data}');
+
     if (result.hasException) {
       debugPrint('${result.exception}');
     }
 
-    final List<dynamic> queryArray = result.data?['queryPost']; // array..
+    debugPrint('${result.data}');
+
+    final List<dynamic> queryArray = result.data?['queryPost'];
 
     List<Post> posts = queryArray.map((e) => Post.fromJson(e)).toList();
 
-    print('ALL POSTS: $posts');
+    debugPrint('ALL POSTS: $posts');
 
     return posts;
   }

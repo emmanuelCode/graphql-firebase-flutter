@@ -1,6 +1,6 @@
 // TODO to create login form and email
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_graphql/views/list_post_screen.dart';
+import 'package:flutter_firebase_graphql/views/post_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/auth.dart';
@@ -19,6 +19,8 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
   final _textEditName = TextEditingController();
   final _textEditEmail = TextEditingController();
   final _textEditPass = TextEditingController();
+
+  int _bottomNavigationBarIndex = 0;
 
   @override
   void initState() {
@@ -62,6 +64,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                   decoration: _decoration('Password'),
                   obscureText: true,
                 ),
+                const SizedBox(height: 8),
                 OutlinedButton(
                   onPressed: () async {
                     _login
@@ -73,11 +76,11 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                       await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const PostsList()));
+                              builder: (context) => const PostsListScreen()));
                     }
-                    if(context.mounted) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(content: Text('Sign Out')));
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Sign Out')));
                     }
                   },
                   child: Text(_login ? 'Login' : 'SignUp'),
@@ -89,7 +92,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
-          debugPrint('index $index');
+          _bottomNavigationBarIndex = index;
           if (index == 0) {
             setState(() => _login = true);
           } else {
@@ -97,6 +100,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
           }
         },
         showSelectedLabels: true,
+        currentIndex: _bottomNavigationBarIndex,
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.login_outlined), label: 'Login'),

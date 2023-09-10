@@ -26,11 +26,12 @@ Map<String, dynamic> _$$_PostToJson(_$_Post instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userPostsHash() => r'9f3e8205e6628dfd43fec5921ba013a3b66de300';
+String _$userPostsHash() => r'24c470ca59175012a56fdfe60384d1d61df076b6';
 
 /// See also [UserPosts].
 @ProviderFor(UserPosts)
-final userPostsProvider = AutoDisposeNotifierProvider<UserPosts, Post>.internal(
+final userPostsProvider =
+    AutoDisposeAsyncNotifierProvider<UserPosts, List<Post>>.internal(
   UserPosts.new,
   name: r'userPostsProvider',
   debugGetCreateSourceHash:
@@ -39,6 +40,6 @@ final userPostsProvider = AutoDisposeNotifierProvider<UserPosts, Post>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$UserPosts = AutoDisposeNotifier<Post>;
+typedef _$UserPosts = AutoDisposeAsyncNotifier<List<Post>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
