@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_firebase_graphql/models/auth.dart';
@@ -22,15 +23,17 @@ class Post with _$Post {
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class UserPosts extends _$UserPosts {
   late GraphQLClient _client;
 
   @override
   Future<List<Post>> build() async {
-    String? token = ref.watch(authProvider.notifier).token;
-    debugPrint('TOKEN #2 $token');
-    _client = ref.watch(graphQLClientProvider(token!));
+    User? user = ref.watch(authProvider);
+
+    final token = await user?.getIdToken();
+
+    _client = ref.read(graphQLClientProvider(token!));
 
     return _getPosts();
   }
@@ -38,6 +41,13 @@ class UserPosts extends _$UserPosts {
   // write queries methods (ADD, UPDATE, READ, DELETE) ...
 
   Future<void> createPost() async {
+    //this works.. todo to refactor..
+    User? user = ref.watch(authProvider);
+    final token = await user?.getIdToken();
+    debugPrint('TOKEN #2 $token');
+    _client = ref.read(graphQLClientProvider(token!));
+
+
     // set the state to loading
     state = const AsyncValue.loading();
 

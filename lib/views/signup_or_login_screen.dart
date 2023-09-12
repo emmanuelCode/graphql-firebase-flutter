@@ -72,7 +72,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                         : await _auth.signUp(
                             'Dash', 'dash@email.com', 'dashword');
 
-                    if (_auth.token != null && context.mounted) {
+                    if (_auth.username != null && context.mounted) {
                       await Navigator.push(
                           context,
                           MaterialPageRoute(

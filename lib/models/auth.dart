@@ -9,9 +9,8 @@ part 'auth.g.dart';
 
 // this riverpod class gives me the state of Firebase User variable
 // where I can get info on the user such as token, name, email etc.
-@Riverpod(keepAlive: true) // so that the token variable doesn't get disposed
+@Riverpod(keepAlive: true) // so that the username variable doesn't get disposed
 class Auth extends _$Auth {
-  String? token;
   String? username;
 
   @override
@@ -23,9 +22,7 @@ class Auth extends _$Auth {
     if (credential.user != null) {
       state = credential.user!;
       debugPrint('STATE: $state');
-      token = await state!.getIdToken();
       username = state!.displayName;
-      debugPrint('TOKEN $token}');
       debugPrint('logged in as ${state!.displayName}');
     } else {
       debugPrint('no user!');
@@ -33,16 +30,14 @@ class Auth extends _$Auth {
   }
 
   Future<void> signUp(String name, String email, String password) async {
-    username = name;
     final credential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
     if (credential.user != null) {
+      username = name; //set the name if user not null
       state = credential.user!;
-      token = await state!.getIdToken();
       // will not be available on account creation (state!.displayName)
       await state!.updateDisplayName(name);
       debugPrint('logged in as $username');
-      debugPrint('TOKEN: $token}');
     } else {
       debugPrint('no user!');
     }
