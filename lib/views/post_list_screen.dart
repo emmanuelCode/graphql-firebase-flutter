@@ -3,6 +3,7 @@ import 'package:flutter_firebase_graphql/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/auth.dart';
+import 'add_post_sheet.dart';
 import 'show_post_screen.dart';
 
 class PostsListScreen extends ConsumerWidget {
@@ -11,22 +12,23 @@ class PostsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userName = ref.watch(authProvider.notifier).username;
-    final userPosts = ref.watch(userPostsProvider.notifier);
+    final auth = ref.watch(authProvider.notifier);
+    final userName = auth.username;
+    final graphqlClient = ref.watch(graphQLClientProvider(auth.token!));
+    final userPosts = ref.watch(userPostsProvider(graphqlClient).notifier);
 
     final PageController controller = PageController();
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (value) async {
         Auth auth = ref.read(authProvider.notifier);
         await auth.logOut();
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text('$userName\'s Posts'),
         ),
-        body: ref.watch(userPostsProvider).when(
+        body: ref.watch(userPostsProvider(graphqlClient)).when(
               data: (posts) => posts.isEmpty
                   ? const Center(child: Text('No Posts'))
                   : PageView(
@@ -46,6 +48,7 @@ class PostsListScreen extends ConsumerWidget {
                                 duration: const Duration(seconds: 1),
                                 curve: Curves.linearToEaseOut,
                               ),
+                              onDelete: () async => await userPosts.deletePost("$index"),
                             );
                           },
                         ),
@@ -63,16 +66,14 @@ class PostsListScreen extends ConsumerWidget {
                   const Center(child: CircularProgressIndicator.adaptive()),
             ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () async => await userPosts.createPost(),
-
-          // showModalBottomSheet(
-          //   context: context,
-          //   builder: (context) => AddPostSheet(
-          //     createPost: userPosts.createPost,
-          //   ),
-          //   isScrollControlled: true,
-          //   useSafeArea: true,
-          // ),
+          onPressed: () => showModalBottomSheet(
+            context: context,
+            builder: (context) => AddPostSheet(
+              createPost: userPosts.createPost,
+            ),
+            isScrollControlled: true,
+            useSafeArea: true,
+          ),
         ),
       ),
     );
@@ -84,6 +85,7 @@ class PostCard extends StatelessWidget {
   final String imageUrl;
   final DateTime created;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   const PostCard({
     super.key,
@@ -91,6 +93,7 @@ class PostCard extends StatelessWidget {
     required this.imageUrl,
     required this.created,
     required this.onTap,
+    required this.onDelete,
   });
 
   @override
@@ -104,6 +107,10 @@ class PostCard extends StatelessWidget {
           title: Text(title),
           subtitle: Text(created.toIso8601String()),
           onTap: onTap,
+          trailing: GestureDetector(
+            onTap: onDelete,
+            child: const Icon(Icons.delete),
+          ),
         ),
       ],
     );

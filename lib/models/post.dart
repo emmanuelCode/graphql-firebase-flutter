@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_firebase_graphql/models/auth.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 // hide the JsonSerializable as there is a library conflict with json_annotation
 import 'package:graphql/client.dart' hide JsonSerializable;
@@ -23,31 +21,16 @@ class Post with _$Post {
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class UserPosts extends _$UserPosts {
-  late GraphQLClient _client;
-
   @override
-  Future<List<Post>> build() async {
-    User? user = ref.watch(authProvider);
-
-    final token = await user?.getIdToken();
-
-    _client = ref.read(graphQLClientProvider(token!));
-
+  Future<List<Post>> build(GraphQLClient client) async {
     return _getPosts();
   }
 
   // write queries methods (ADD, UPDATE, READ, DELETE) ...
 
   Future<void> createPost() async {
-    //this works.. todo to refactor..
-    User? user = ref.watch(authProvider);
-    final token = await user?.getIdToken();
-    debugPrint('TOKEN #2 $token');
-    _client = ref.read(graphQLClientProvider(token!));
-
-
     // set the state to loading
     state = const AsyncValue.loading();
 
@@ -67,22 +50,60 @@ class UserPosts extends _$UserPosts {
       },
     );
 
-    state = await AsyncValue.guard(() async {
-      //get the graphql client to perform queries and mutation
-      final QueryResult result = await _client.mutate(options);
+    // get the graphql client to perform queries and mutation
+    final QueryResult result = await client.mutate(options);
 
-      if (result.hasException) {
-        debugPrint('${result.exception}');
-      }
-      debugPrint('ADDED: ${result.data}');
+    if (result.hasException) {
+      debugPrint('${result.exception}');
+    }
+    debugPrint('ADDED: ${result.data}');
 
-      return _getPosts();
-    });
+    final newPost = Post.fromJson(result.data!['addPost']['post'][0]);
+    final oldState = state.value;
+
+    state = AsyncValue.data([
+      ...oldState!,
+      newPost,
+    ]);
+  }
+
+  Future<void> deletePost(String id) async {
+    // set the state to loading
+    state = const AsyncValue.loading();
+
+    final String addPostMutation =
+        await rootBundle.loadString('lib/graphql_queries/delete_post.graphql');
+
+    final MutationOptions options = MutationOptions(
+      document: gql(addPostMutation),
+      variables: <String, dynamic>{
+        // the variable put here must match the query variable ($filter)
+        'filter': {
+          'post': {
+            'id': id,
+          }
+        }
+      },
+    );
+
+    // get the graphql client to perform queries and mutation
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      debugPrint('${result.exception}');
+    }
+    debugPrint('DELETED: ${result.data}');
+
+    final deletePost = Post.fromJson(result.data!['deletePost']['post'][0]);
+
+    final oldPost = state.value!;
+    // update list with removing the post that has the same id
+    oldPost.removeWhere((post) => post.id == deletePost.id );
+
+    state = AsyncValue.data(oldPost);
   }
 
   // get all posts entered
-  // this will be private as I need it to reload the list internally
-  // inspired by : https://docs-v2.riverpod.dev/docs/providers/notifier_provider
   Future<List<Post>> _getPosts() async {
     final String getPostsQuery = await rootBundle
         .loadString('lib/graphql_queries/get_list_posts.graphql');
@@ -95,7 +116,7 @@ class UserPosts extends _$UserPosts {
     );
 
     //get the graphql client to perform queries and mutation
-    final QueryResult result = await _client.query(options);
+    final QueryResult result = await client.query(options);
 
     if (result.hasException) {
       debugPrint('${result.exception}');
@@ -103,7 +124,7 @@ class UserPosts extends _$UserPosts {
 
     debugPrint('${result.data}');
 
-    final List<dynamic> queryArray = result.data?['queryPost'];
+    final List<dynamic> queryArray = result.data!['queryPost'];
 
     List<Post> posts = queryArray.map((e) => Post.fromJson(e)).toList();
 

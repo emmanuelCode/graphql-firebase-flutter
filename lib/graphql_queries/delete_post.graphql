@@ -1,0 +1,12 @@
+mutation deletePost($filter: PostFilter!) {
+   deletePost(filter: $filter) {
+     msg
+     post {
+       id
+       title
+       imageUrl
+       text
+       dateTime    
+     }
+   }
+}
