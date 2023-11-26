@@ -35,6 +35,7 @@ class PostsListScreen extends ConsumerWidget {
                       controller: controller,
                       children: [
                         ListView.builder(
+                          padding: const EdgeInsets.all(8.0),
                           shrinkWrap: true,
                           itemCount: posts.length,
                           itemBuilder: (context, index) {
@@ -48,7 +49,8 @@ class PostsListScreen extends ConsumerWidget {
                                 duration: const Duration(seconds: 1),
                                 curve: Curves.linearToEaseOut,
                               ),
-                              onDelete: () async => await userPosts.deletePost("$index"),
+                              onDelete: () async =>
+                                  await userPosts.deletePost(posts[index].id),
                             );
                           },
                         ),
@@ -66,6 +68,7 @@ class PostsListScreen extends ConsumerWidget {
                   const Center(child: CircularProgressIndicator.adaptive()),
             ),
         floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
           onPressed: () => showModalBottomSheet(
             context: context,
             builder: (context) => AddPostSheet(
@@ -98,21 +101,24 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Image.network('https://picsum.photos/id/237/200/300'),
-        ),
-        ListTile(
-          title: Text(title),
-          subtitle: Text(created.toIso8601String()),
-          onTap: onTap,
-          trailing: GestureDetector(
-            onTap: onDelete,
-            child: const Icon(Icons.delete),
+    return Card(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Image.network('https://picsum.photos/id/237/300/300'),
           ),
-        ),
-      ],
+          ListTile(
+            title: Text(title),
+            subtitle: Text(created.toIso8601String()),
+            onTap: onTap,
+            trailing: GestureDetector(
+              onTap: onDelete,
+              child: const Icon(Icons.delete),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_firebase_graphql/views/signup_or_login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +13,7 @@ import 'firebase_options.dart';
 void main() async {
   // initialize firebase
   WidgetsFlutterBinding.ensureInitialized();
+  updateCertificateForOlderDevice();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -36,9 +40,20 @@ class MyApp extends StatelessWidget {
       title: 'Firebase/GraphQL Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
       ),
       home: const SignUpOrLogin(),
     );
   }
+}
+
+// update certificate on older device that don't have support 
+// for the new certificate.
+// to avoid the error :
+// Handshake error in client (OS Error: CERTIFICATE_VERIFY_FAILED: certificate has expired(handshake.cc:393))
+// when using Image.network() widget
+void updateCertificateForOlderDevice() async {
+  ByteData data =
+      await PlatformAssetBundle().load('lib/certificate/lets-encrypt-r3.pem');
+  SecurityContext.defaultContext
+      .setTrustedCertificatesBytes(data.buffer.asUint8List());
 }

@@ -79,9 +79,7 @@ class UserPosts extends _$UserPosts {
       variables: <String, dynamic>{
         // the variable put here must match the query variable ($filter)
         'filter': {
-          'post': {
             'id': id,
-          }
         }
       },
     );

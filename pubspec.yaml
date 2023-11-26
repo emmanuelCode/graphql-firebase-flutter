@@ -106,3 +106,4 @@ flutter:
 
   assets:
     - lib/graphql_queries/
+    - lib/certificate/
