@@ -1,4 +1,3 @@
-// TODO to create login form and email
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_graphql/views/post_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

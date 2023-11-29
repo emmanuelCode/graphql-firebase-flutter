@@ -113,9 +113,9 @@ class PostCard extends StatelessWidget {
               child: Image.network('https://picsum.photos/id/237/300/300'),
             ),
             ListTile(
-              leading: GestureDetector(
-                onTap: onDelete,
-                child: const Icon(Icons.delete),
+              leading: IconButton(
+                onPressed: onDelete,
+                icon: const Icon(Icons.delete),
               ),
               title: Text(title),
               subtitle: Text(created.toIso8601String()),

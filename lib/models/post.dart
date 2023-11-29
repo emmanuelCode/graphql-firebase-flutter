@@ -28,7 +28,7 @@ class UserPosts extends _$UserPosts {
     return _getPosts();
   }
 
-  // write queries methods (ADD, UPDATE, READ, DELETE) ...
+  // TODO write queries methods (ADD, UPDATE, READ, DELETE) ...
 
   Future<void> createPost() async {
     // set the state to loading
@@ -43,7 +43,7 @@ class UserPosts extends _$UserPosts {
         // the variable put here must match the query variable ($post)
         'post': {
           'title': 'Jane Doe',
-          'imageUrl': 'url',
+          'imageUrl': 'https://picsum.photos/id/238/300/300',
           'text': 'related to John Doe',
           'dateTime': DateTime.now().toIso8601String(),
           'postOwnerID': userID,
@@ -51,21 +51,18 @@ class UserPosts extends _$UserPosts {
       },
     );
 
-    // get the graphql client to perform queries and mutation
-    final QueryResult result = await client.mutate(options);
+    // update the state when future finishes
+    state = await AsyncValue.guard(() async {
+      // get the graphql client to perform queries and mutation
+      final QueryResult result = await client.mutate(options);
 
-    if (result.hasException) {
-      debugPrint('${result.exception}');
-    }
-    debugPrint('ADDED: ${result.data}');
+      if (result.hasException) {
+        debugPrint('${result.exception}');
+      }
+      debugPrint('ADDED: ${result.data}');
 
-    final newPost = Post.fromJson(result.data!['addPost']['post'][0]);
-    final oldState = state.value;
-
-    state = AsyncValue.data([
-      ...oldState!,
-      newPost,
-    ]);
+      return _getPosts();
+    });
   }
 
   Future<void> deletePost(String id) async {
@@ -76,30 +73,28 @@ class UserPosts extends _$UserPosts {
         await rootBundle.loadString('lib/graphql_queries/delete_post.graphql');
 
     final MutationOptions options = MutationOptions(
+      fetchPolicy: FetchPolicy.noCache,
       document: gql(addPostMutation),
       variables: <String, dynamic>{
         // the variable put here must match the query variable ($filter)
         'filter': {
-            'id': id,
+          'id': id,
         }
       },
     );
 
-    // get the graphql client to perform queries and mutation
-    final QueryResult result = await client.mutate(options);
+    // update the state when future finishes
+    state = await AsyncValue.guard(() async {
+      // get the graphql client to perform queries and mutation
+      final QueryResult result = await client.mutate(options);
 
-    if (result.hasException) {
-      debugPrint('${result.exception}');
-    }
-    debugPrint('DELETED: ${result.data}');
+      if (result.hasException) {
+        debugPrint('${result.exception}');
+      }
+      debugPrint('DELETED: ${result.data}');
 
-    final deletePost = Post.fromJson(result.data!['deletePost']['post'][0]);
-
-    final oldPost = state.value!;
-    // update list with removing the post that has the same id
-    oldPost.removeWhere((post) => post.id == deletePost.id );
-
-    state = AsyncValue.data(oldPost);
+      return _getPosts();
+    });
   }
 
   // get all posts entered
@@ -108,6 +103,7 @@ class UserPosts extends _$UserPosts {
         .loadString('lib/graphql_queries/get_list_posts.graphql');
 
     final QueryOptions options = QueryOptions(
+      fetchPolicy: FetchPolicy.noCache,
       document: gql(getPostsQuery),
       variables: const <String, dynamic>{
         // the variable put here must match the query variable

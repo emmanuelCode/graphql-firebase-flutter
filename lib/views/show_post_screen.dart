@@ -16,17 +16,23 @@ class ShowPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(title),
-            Text(created.toIso8601String())
-          ],
-        ),
-        Image.network(imageUrl),
-        Text(text),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(title),
+              const SizedBox(width: 8),
+              Text(created.toIso8601String())
+            ],
+          ),
+          Image.network(imageUrl),
+          const SizedBox(height: 8),
+          Text(text),
+        ],
+      ),
     );
   }
 }
