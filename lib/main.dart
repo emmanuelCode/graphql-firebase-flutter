@@ -52,8 +52,10 @@ class MyApp extends StatelessWidget {
 // Handshake error in client (OS Error: CERTIFICATE_VERIFY_FAILED: certificate has expired(handshake.cc:393))
 // when using Image.network() widget
 void updateCertificateForOlderDevice() async {
+  if(!kIsWeb){
   ByteData data =
       await PlatformAssetBundle().load('lib/certificate/lets-encrypt-r3.pem');
   SecurityContext.defaultContext
       .setTrustedCertificatesBytes(data.buffer.asUint8List());
+  }
 }

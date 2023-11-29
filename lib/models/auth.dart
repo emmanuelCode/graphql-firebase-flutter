@@ -13,6 +13,7 @@ part 'auth.g.dart';
 class Auth extends _$Auth {
   String? username;
   String? token;
+  String? id;
 
   @override
   User? build() => FirebaseAuth.instance.currentUser;
@@ -26,6 +27,8 @@ class Auth extends _$Auth {
       username = state!.displayName;
       debugPrint('STATE: $state');
       debugPrint('logged in as ${state!.displayName}');
+      id = state!.uid;
+      debugPrint('USER_ID: $id');
     } else {
       debugPrint('no user!');
     }
@@ -41,6 +44,8 @@ class Auth extends _$Auth {
       // will not be available on account creation (state!.displayName)
       await state!.updateDisplayName(name);
       debugPrint('logged in as $username');
+      id = state!.uid;
+      debugPrint('USER_ID: $id');
     } else {
       debugPrint('no user!');
     }

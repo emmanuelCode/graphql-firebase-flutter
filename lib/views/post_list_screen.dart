@@ -14,8 +14,9 @@ class PostsListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider.notifier);
     final userName = auth.username;
+    final userID = auth.id!;
     final graphqlClient = ref.watch(graphQLClientProvider(auth.token!));
-    final userPosts = ref.watch(userPostsProvider(graphqlClient).notifier);
+    final userPosts = ref.watch(userPostsProvider(graphqlClient, userID).notifier);
 
     final PageController controller = PageController();
 
@@ -28,7 +29,7 @@ class PostsListScreen extends ConsumerWidget {
         appBar: AppBar(
           title: Text('$userName\'s Posts'),
         ),
-        body: ref.watch(userPostsProvider(graphqlClient)).when(
+        body: ref.watch(userPostsProvider(graphqlClient, userID)).when(
               data: (posts) => posts.isEmpty
                   ? const Center(child: Text('No Posts'))
                   : PageView(
@@ -102,22 +103,25 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Image.network('https://picsum.photos/id/237/300/300'),
-          ),
-          ListTile(
-            title: Text(title),
-            subtitle: Text(created.toIso8601String()),
-            onTap: onTap,
-            trailing: GestureDetector(
-              onTap: onDelete,
-              child: const Icon(Icons.delete),
+      child: InkWell(
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        onTap: onTap,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Image.network('https://picsum.photos/id/237/300/300'),
             ),
-          ),
-        ],
+            ListTile(
+              leading: GestureDetector(
+                onTap: onDelete,
+                child: const Icon(Icons.delete),
+              ),
+              title: Text(title),
+              subtitle: Text(created.toIso8601String()),
+            ),
+          ],
+        ),
       ),
     );
   }

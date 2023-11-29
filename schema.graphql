@@ -1,9 +1,15 @@
-type Post {
+type Post @auth(
+ query: { rule: "query($user_id: String!) { queryPost(filter: { postOwnerID: { eq: $user_id } })  { id } } " }
+ add: { rule: "query($user_id: String!) { queryPost(filter: { postOwnerID: { eq: $user_id } })  { id } } " }
+ delete: { rule: "query($user_id: String!) { queryPost(filter: { postOwnerID: { eq: $user_id } })  { id } } " }
+ update: { rule: "query($user_id: String!) { queryPost(filter: { postOwnerID: { eq: $user_id } })  { id } } " }
+) {
   id: ID!
   title: String!
   imageUrl: String!
   text: String!
   dateTime: DateTime!
+  postOwnerID: String! @search(by:[hash])
 }
 
 

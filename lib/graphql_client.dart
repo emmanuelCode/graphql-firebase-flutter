@@ -30,7 +30,9 @@ String _signFirebaseToken(String token) {
   if (kDebugMode) {
     try {
       var decoded = JwtDecoder.decode(token);
+      debugPrint('DECODED: $decoded');
       var claims = JwtClaim.fromMap(decoded, defaultIatExp: false);
+      debugPrint('CLAIMS: $claims');
       return issueJwtHS256(claims, 'secret');
     } catch (e) {
       print("Got unexpected exception (will return unmodified token): $e");

@@ -155,7 +155,7 @@ class _GraphQLClientProviderElement
   String get token => (origin as GraphQLClientProvider).token;
 }
 
-String _$authHash() => r'468fd9349fba4a0fffb6202f01269d29480ae0e9';
+String _$authHash() => r'd22ef33f67f6f182eb57e78407683c286ac903d6';
 
 /// See also [Auth].
 @ProviderFor(Auth)

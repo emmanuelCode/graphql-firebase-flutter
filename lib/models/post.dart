@@ -24,7 +24,7 @@ class Post with _$Post {
 @riverpod
 class UserPosts extends _$UserPosts {
   @override
-  Future<List<Post>> build(GraphQLClient client) async {
+  Future<List<Post>> build(GraphQLClient client, String userID) async {
     return _getPosts();
   }
 
@@ -40,12 +40,13 @@ class UserPosts extends _$UserPosts {
     final MutationOptions options = MutationOptions(
       document: gql(addPostMutation),
       variables: <String, dynamic>{
-        // the variable put here must match the query variable ($user)
+        // the variable put here must match the query variable ($post)
         'post': {
           'title': 'Jane Doe',
           'imageUrl': 'url',
           'text': 'related to John Doe',
           'dateTime': DateTime.now().toIso8601String(),
+          'postOwnerID': userID,
         }
       },
     );

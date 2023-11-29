@@ -6,7 +6,7 @@ part of 'post.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Post _$$_PostFromJson(Map<String, dynamic> json) => _$_Post(
+_$PostImpl _$$PostImplFromJson(Map<String, dynamic> json) => _$PostImpl(
       id: json['id'] as String,
       title: json['title'] as String,
       imageUrl: json['imageUrl'] as String,
@@ -14,7 +14,8 @@ _$_Post _$$_PostFromJson(Map<String, dynamic> json) => _$_Post(
       dateTime: DateTime.parse(json['dateTime'] as String),
     );
 
-Map<String, dynamic> _$$_PostToJson(_$_Post instance) => <String, dynamic>{
+Map<String, dynamic> _$$PostImplToJson(_$PostImpl instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
       'imageUrl': instance.imageUrl,
@@ -26,7 +27,7 @@ Map<String, dynamic> _$$_PostToJson(_$_Post instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userPostsHash() => r'68e064a3fdf53f224778c1d19f86c20595c52d9a';
+String _$userPostsHash() => r'0ec3fb651867f516f6c6fb4cbcfdcd6644b6d3fe';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -52,9 +53,11 @@ class _SystemHash {
 abstract class _$UserPosts
     extends BuildlessAutoDisposeAsyncNotifier<List<Post>> {
   late final GraphQLClient client;
+  late final String userID;
 
-  Future<List<Post>> build(
+  FutureOr<List<Post>> build(
     GraphQLClient client,
+    String userID,
   );
 }
 
@@ -70,9 +73,11 @@ class UserPostsFamily extends Family<AsyncValue<List<Post>>> {
   /// See also [UserPosts].
   UserPostsProvider call(
     GraphQLClient client,
+    String userID,
   ) {
     return UserPostsProvider(
       client,
+      userID,
     );
   }
 
@@ -82,6 +87,7 @@ class UserPostsFamily extends Family<AsyncValue<List<Post>>> {
   ) {
     return call(
       provider.client,
+      provider.userID,
     );
   }
 
@@ -106,8 +112,11 @@ class UserPostsProvider
   /// See also [UserPosts].
   UserPostsProvider(
     GraphQLClient client,
+    String userID,
   ) : this._internal(
-          () => UserPosts()..client = client,
+          () => UserPosts()
+            ..client = client
+            ..userID = userID,
           from: userPostsProvider,
           name: r'userPostsProvider',
           debugGetCreateSourceHash:
@@ -117,6 +126,7 @@ class UserPostsProvider
           dependencies: UserPostsFamily._dependencies,
           allTransitiveDependencies: UserPostsFamily._allTransitiveDependencies,
           client: client,
+          userID: userID,
         );
 
   UserPostsProvider._internal(
@@ -127,16 +137,19 @@ class UserPostsProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.client,
+    required this.userID,
   }) : super.internal();
 
   final GraphQLClient client;
+  final String userID;
 
   @override
-  Future<List<Post>> runNotifierBuild(
+  FutureOr<List<Post>> runNotifierBuild(
     covariant UserPosts notifier,
   ) {
     return notifier.build(
       client,
+      userID,
     );
   }
 
@@ -145,13 +158,16 @@ class UserPostsProvider
     return ProviderOverride(
       origin: this,
       override: UserPostsProvider._internal(
-        () => create()..client = client,
+        () => create()
+          ..client = client
+          ..userID = userID,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         client: client,
+        userID: userID,
       ),
     );
   }
@@ -164,13 +180,16 @@ class UserPostsProvider
 
   @override
   bool operator ==(Object other) {
-    return other is UserPostsProvider && other.client == client;
+    return other is UserPostsProvider &&
+        other.client == client &&
+        other.userID == userID;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, client.hashCode);
+    hash = _SystemHash.combine(hash, userID.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -179,6 +198,9 @@ class UserPostsProvider
 mixin UserPostsRef on AutoDisposeAsyncNotifierProviderRef<List<Post>> {
   /// The parameter `client` of this provider.
   GraphQLClient get client;
+
+  /// The parameter `userID` of this provider.
+  String get userID;
 }
 
 class _UserPostsProviderElement
@@ -188,6 +210,8 @@ class _UserPostsProviderElement
 
   @override
   GraphQLClient get client => (origin as UserPostsProvider).client;
+  @override
+  String get userID => (origin as UserPostsProvider).userID;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
