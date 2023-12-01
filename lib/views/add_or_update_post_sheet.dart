@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/post.dart';
 
-// add page view to move between list of post and addPost
 class AddOrUpdatePostSheet extends ConsumerWidget {
   AddOrUpdatePostSheet({
     this.currentPost,
