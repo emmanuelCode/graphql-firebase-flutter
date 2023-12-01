@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_graphql/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,8 @@ class PostsListScreen extends ConsumerWidget {
     final userName = auth.username;
     final userID = auth.id!;
     final graphqlClient = ref.watch(graphQLClientProvider(auth.token!));
-    final userPosts = ref.watch(userPostsProvider(graphqlClient, userID).notifier);
+    final userPosts =
+        ref.watch(userPostsProvider(graphqlClient, userID).notifier);
 
     final PageController controller = PageController();
 
@@ -41,9 +43,7 @@ class PostsListScreen extends ConsumerWidget {
                           itemCount: posts.length,
                           itemBuilder: (context, index) {
                             return PostCard(
-                              title: posts[index].title,
-                              imageUrl: posts[index].imageUrl,
-                              created: posts[index].dateTime,
+                              post: posts[index],
                               onTap: () => controller.animateToPage(
                                 // +1 since we have a list to first index
                                 index + 1,
@@ -52,6 +52,7 @@ class PostsListScreen extends ConsumerWidget {
                               ),
                               onDelete: () async =>
                                   await userPosts.deletePost(posts[index].id),
+                              updatePost: userPosts.updatePost,
                             );
                           },
                         ),
@@ -68,11 +69,12 @@ class PostsListScreen extends ConsumerWidget {
               loading: () =>
                   const Center(child: CircularProgressIndicator.adaptive()),
             ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () => showModalBottomSheet(
             context: context,
-            builder: (context) => AddPostSheet(
+            builder: (context) => AddOrUpdatePostSheet(
               createPost: userPosts.createPost,
             ),
             isScrollControlled: true,
@@ -85,19 +87,17 @@ class PostsListScreen extends ConsumerWidget {
 }
 
 class PostCard extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  final DateTime created;
+  final Post post;
   final VoidCallback onTap;
   final VoidCallback onDelete;
+  final AsyncValueSetter<String> updatePost;
 
   const PostCard({
     super.key,
-    required this.title,
-    required this.imageUrl,
-    required this.created,
+    required this.post,
     required this.onTap,
     required this.onDelete,
+    required this.updatePost,
   });
 
   @override
@@ -110,15 +110,27 @@ class PostCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
-              child: Image.network('https://picsum.photos/id/237/300/300'),
+              child: Image.network(post.imageUrl),
             ),
             ListTile(
               leading: IconButton(
+                icon: const Icon(Icons.edit_note),
+                onPressed: () => showModalBottomSheet(
+                  context: context,
+                  builder: (context) => AddOrUpdatePostSheet(
+                    updatePost: updatePost,
+                    currentPost: post,
+                  ),
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                ),
+              ),
+              title: Text(post.title),
+              subtitle: Text(post.dateTime.toIso8601String()),
+              trailing: IconButton(
                 onPressed: onDelete,
                 icon: const Icon(Icons.delete),
               ),
-              title: Text(title),
-              subtitle: Text(created.toIso8601String()),
             ),
           ],
         ),

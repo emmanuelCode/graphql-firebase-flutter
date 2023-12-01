@@ -28,7 +28,7 @@ class UserPosts extends _$UserPosts {
     return _getPosts();
   }
 
-  // TODO write queries methods (ADD, UPDATE, READ, DELETE) ...
+  // TODO add arguments to queries so the user can enter them 
 
   Future<void> createPost() async {
     // set the state to loading
@@ -60,6 +60,46 @@ class UserPosts extends _$UserPosts {
         debugPrint('${result.exception}');
       }
       debugPrint('ADDED: ${result.data}');
+
+      return _getPosts();
+    });
+  }
+
+   Future<void> updatePost(String id) async {
+    // set the state to loading
+    state = const AsyncValue.loading();
+
+    final String updatePostMutation =
+        await rootBundle.loadString('lib/graphql_queries/update_post.graphql');
+
+    final MutationOptions options = MutationOptions(
+      document: gql(updatePostMutation),
+      variables: <String, dynamic>{
+        // the variable put here must match the query variable ($patch)
+        'patch': {
+          'filter': {
+            'id': [id],
+          },
+          'set': {
+            'title': 'Jane Doe2',
+            'imageUrl': 'https://picsum.photos/id/240/300/300',
+            'text': 'related to John Doe2',
+            'dateTime': DateTime.now().toIso8601String(),
+            // here we don't need to update the ownwer so we omit postOwnerID
+          }
+        }
+      },
+    );
+
+    // update the state when future finishes
+    state = await AsyncValue.guard(() async {
+      // get the graphql client to perform queries and mutation
+      final QueryResult result = await client.mutate(options);
+
+      if (result.hasException) {
+        debugPrint('${result.exception}');
+      }
+      debugPrint('UPDATE: ${result.data}');
 
       return _getPosts();
     });

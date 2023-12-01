@@ -1,0 +1,11 @@
+mutation updatePost ($patch: UpdatePostInput!) {
+  updatePost(input: $patch) {
+    post {
+      id
+      title
+      text
+      imageUrl
+      dateTime
+    }
+  }
+}
