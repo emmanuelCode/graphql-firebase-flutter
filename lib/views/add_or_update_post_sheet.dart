@@ -94,7 +94,7 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               TextFormField(
-                decoration: _decoration('number 1 to 1085'),
+                decoration: _decoration('number 0 to 1084'),
                 controller: textEditNumber,
                 validator: (value) {
                   int? number = int.tryParse(value!);
@@ -102,8 +102,8 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
                     return 'Please enter a number';
                   }
 
-                  if (number < 1 || number > 1085) {
-                    return 'Please enter a number of 1 to 1085';
+                  if (number < 0 || number > 1084) {
+                    return 'Please enter a number of 0 to 1084';
                   }
                   return null;
                 },
