@@ -33,6 +33,14 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
         border: const OutlineInputBorder(), labelText: value);
   }
 
+  _setLogin(bool login) {
+    _login = login;
+    //reset text field when changing state
+    _textEditName.text = '';
+    _textEditEmail.text = '';
+    _textEditPass.text = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,9 +75,10 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                 OutlinedButton(
                   onPressed: () async {
                     _login
-                        ? await _auth.logIn('dash@email.com', 'dashword')
-                        : await _auth.signUp(
-                            'Dash', 'dash@email.com', 'dashword');
+                        ? await _auth.logIn(
+                            _textEditEmail.text, _textEditPass.text)
+                        : await _auth.signUp(_textEditName.text,
+                            _textEditEmail.text, _textEditPass.text);
 
                     if (_auth.username != null && context.mounted) {
                       await Navigator.push(
@@ -93,9 +102,9 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
         onTap: (index) {
           _bottomNavigationBarIndex = index;
           if (index == 0) {
-            setState(() => _login = true);
+            setState(() => _setLogin(true));
           } else {
-            setState(() => _login = false);
+            setState(() => _setLogin(false));
           }
         },
         showSelectedLabels: true,

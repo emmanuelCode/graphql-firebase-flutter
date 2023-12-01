@@ -28,9 +28,12 @@ class UserPosts extends _$UserPosts {
     return _getPosts();
   }
 
-  // TODO add arguments to queries so the user can enter them 
 
-  Future<void> createPost() async {
+  Future<void> createPost({
+    required String title,
+    required String imageID,
+    required String text,
+  }) async {
     // set the state to loading
     state = const AsyncValue.loading();
 
@@ -42,9 +45,9 @@ class UserPosts extends _$UserPosts {
       variables: <String, dynamic>{
         // the variable put here must match the query variable ($post)
         'post': {
-          'title': 'Jane Doe',
-          'imageUrl': 'https://picsum.photos/id/238/300/300',
-          'text': 'related to John Doe',
+          'title': title,
+          'imageUrl': 'https://picsum.photos/id/$imageID/300/300',
+          'text': text,
           'dateTime': DateTime.now().toIso8601String(),
           'postOwnerID': userID,
         }
@@ -65,7 +68,12 @@ class UserPosts extends _$UserPosts {
     });
   }
 
-   Future<void> updatePost(String id) async {
+  Future<void> updatePost({
+    required String id,
+    required String title,
+    required String imageID,
+    required String text,
+  }) async {
     // set the state to loading
     state = const AsyncValue.loading();
 
@@ -81,9 +89,9 @@ class UserPosts extends _$UserPosts {
             'id': [id],
           },
           'set': {
-            'title': 'Jane Doe2',
-            'imageUrl': 'https://picsum.photos/id/240/300/300',
-            'text': 'related to John Doe2',
+            'title': title,
+            'imageUrl': 'https://picsum.photos/id/$imageID/300/300',
+            'text': text,
             'dateTime': DateTime.now().toIso8601String(),
             // here we don't need to update the ownwer so we omit postOwnerID
           }
@@ -105,7 +113,7 @@ class UserPosts extends _$UserPosts {
     });
   }
 
-  Future<void> deletePost(String id) async {
+  Future<void> deletePost({required String id}) async {
     // set the state to loading
     state = const AsyncValue.loading();
 
@@ -145,9 +153,7 @@ class UserPosts extends _$UserPosts {
     final QueryOptions options = QueryOptions(
       fetchPolicy: FetchPolicy.noCache,
       document: gql(getPostsQuery),
-      variables: const <String, dynamic>{
-        // the variable put here must match the query variable
-      },
+      variables: const <String, dynamic>{},
     );
 
     //get the graphql client to perform queries and mutation

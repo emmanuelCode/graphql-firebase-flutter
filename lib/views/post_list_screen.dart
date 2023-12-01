@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_graphql/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/auth.dart';
-import 'add_post_sheet.dart';
+import 'add_or_update_post_sheet.dart';
 import 'show_post_screen.dart';
 
 class PostsListScreen extends ConsumerWidget {
@@ -50,8 +49,9 @@ class PostsListScreen extends ConsumerWidget {
                                 duration: const Duration(seconds: 1),
                                 curve: Curves.linearToEaseOut,
                               ),
-                              onDelete: () async =>
-                                  await userPosts.deletePost(posts[index].id),
+                              onDelete: () async => await userPosts.deletePost(
+                                id: posts[index].id,
+                              ),
                               updatePost: userPosts.updatePost,
                             );
                           },
@@ -90,7 +90,12 @@ class PostCard extends StatelessWidget {
   final Post post;
   final VoidCallback onTap;
   final VoidCallback onDelete;
-  final AsyncValueSetter<String> updatePost;
+  final Future<void> Function({
+    required String id,
+    required String imageID,
+    required String text,
+    required String title,
+  }) updatePost;
 
   const PostCard({
     super.key,

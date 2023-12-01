@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,8 +19,18 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
 
   final _formKey = GlobalKey<FormState>();
 
-  final AsyncCallback? createPost;
-  final AsyncValueSetter<String>? updatePost;
+  final Future<void> Function({
+    required String imageID,
+    required String text,
+    required String title,
+  })? createPost;
+
+  final Future<void> Function({
+    required String id,
+    required String imageID,
+    required String text,
+    required String title,
+  })? updatePost;
 
   final Post? currentPost;
 
@@ -111,9 +120,18 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     if (_isUpdating()) {
-                      await updatePost!(currentPost!.id);
+                      await updatePost!(
+                        id: currentPost!.id,
+                        title: textEditTitle.text,
+                        imageID: textEditNumber.text,
+                        text: textEditText.text,
+                      );
                     } else {
-                      await createPost!();
+                      await createPost!(
+                        title: textEditTitle.text,
+                        imageID: textEditNumber.text,
+                        text: textEditText.text,
+                      );
                     }
 
                     if (context.mounted) {
