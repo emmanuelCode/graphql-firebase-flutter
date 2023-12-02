@@ -7,7 +7,6 @@ import 'add_or_update_post_sheet.dart';
 import 'show_post_screen.dart';
 
 class PostsListScreen extends ConsumerWidget {
-  // need id here for deletion
   const PostsListScreen({super.key});
 
   @override
