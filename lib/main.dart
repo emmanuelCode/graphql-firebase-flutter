@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +17,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  if (kDebugMode) {
-    try {
-      // uses emulator
-      await FirebaseAuth.instance.useAuthEmulator('0.0.0.0', 9099);
-    } catch (e) {
-      debugPrint('$e');
-    }
-  }
 
   runApp(const ProviderScope(child: MyApp()));
 }

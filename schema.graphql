@@ -13,4 +13,4 @@ type Post @auth(
 }
 
 
-# Dgraph.Authorization {"Header":"X-Auth-Token", "VerificationKey":"secret","Algo":"HS256", "Namespace":"https://dgraph.io/jwt/claims","Audience":["graphql-firebase-flutter"], "ClosedByDefault":true}
+# Dgraph.Authorization {"Header":"X-Auth-Token", "JWKUrl":"https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com", "Namespace":"https://dgraph.io/jwt/claims","Audience":["graphql-firebase-flutter"], "ClosedByDefault":true}
