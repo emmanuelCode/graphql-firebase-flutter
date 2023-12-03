@@ -9,7 +9,7 @@ part 'auth.g.dart';
 
 // this riverpod class gives me the state of Firebase User variable
 // where I can get info on the user such as token, name, email etc.
-@Riverpod(keepAlive: true) // so that the username and token variable doesn't get disposed
+@Riverpod(keepAlive: true) // the username/token/id variables won't get disposed
 class Auth extends _$Auth {
   String? username;
   String? token;
