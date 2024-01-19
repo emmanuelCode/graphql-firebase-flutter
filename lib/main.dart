@@ -22,7 +22,11 @@ void main() async {
   if (kDebugMode) {
     try {
       // uses emulator
-      await FirebaseAuth.instance.useAuthEmulator('0.0.0.0', 9099);
+      await FirebaseAuth.instance.useAuthEmulator(
+        'localhost',
+        9099,
+        automaticHostMapping: false,
+      );
     } catch (e) {
       debugPrint('$e');
     }
