@@ -57,5 +57,5 @@ class Auth extends _$Auth {
 }
 
 @riverpod
-GraphQLClient graphQLClient(GraphQLClientRef ref, String token) =>
+GraphQLClient graphQLClient(Ref ref, String token) =>
     graphQLClientInit(token);

@@ -6,168 +6,133 @@ part of 'auth.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$graphQLClientHash() => r'e5988c9b0bc70713f7f53e0bc623fa020f938f68';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+@ProviderFor(Auth)
+final authProvider = AuthProvider._();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [graphQLClient].
-@ProviderFor(graphQLClient)
-const graphQLClientProvider = GraphQLClientFamily();
-
-/// See also [graphQLClient].
-class GraphQLClientFamily extends Family<GraphQLClient> {
-  /// See also [graphQLClient].
-  const GraphQLClientFamily();
-
-  /// See also [graphQLClient].
-  GraphQLClientProvider call(
-    String token,
-  ) {
-    return GraphQLClientProvider(
-      token,
-    );
-  }
-
-  @override
-  GraphQLClientProvider getProviderOverride(
-    covariant GraphQLClientProvider provider,
-  ) {
-    return call(
-      provider.token,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'graphQLClientProvider';
-}
-
-/// See also [graphQLClient].
-class GraphQLClientProvider extends AutoDisposeProvider<GraphQLClient> {
-  /// See also [graphQLClient].
-  GraphQLClientProvider(
-    String token,
-  ) : this._internal(
-          (ref) => graphQLClient(
-            ref as GraphQLClientRef,
-            token,
-          ),
-          from: graphQLClientProvider,
-          name: r'graphQLClientProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$graphQLClientHash,
-          dependencies: GraphQLClientFamily._dependencies,
-          allTransitiveDependencies:
-              GraphQLClientFamily._allTransitiveDependencies,
-          token: token,
-        );
-
-  GraphQLClientProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.token,
-  }) : super.internal();
-
-  final String token;
-
-  @override
-  Override overrideWith(
-    GraphQLClient Function(GraphQLClientRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: GraphQLClientProvider._internal(
-        (ref) => create(ref as GraphQLClientRef),
-        from: from,
-        name: null,
+final class AuthProvider extends $NotifierProvider<Auth, User?> {
+  AuthProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authProvider',
+        isAutoDispose: false,
         dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        token: token,
-      ),
-    );
-  }
+        $allTransitiveDependencies: null,
+      );
 
   @override
-  AutoDisposeProviderElement<GraphQLClient> createElement() {
-    return _GraphQLClientProviderElement(this);
+  String debugGetCreateSourceHash() => _$authHash();
+
+  @$internal
+  @override
+  Auth create() => Auth();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(User? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<User?>(value),
+    );
+  }
+}
+
+String _$authHash() => r'127cde5849813e37250b05df8633d6be038131be';
+
+abstract class _$Auth extends $Notifier<User?> {
+  User? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<User?, User?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<User?, User?>,
+              User?,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(graphQLClient)
+final graphQLClientProvider = GraphQLClientFamily._();
+
+final class GraphQLClientProvider
+    extends $FunctionalProvider<GraphQLClient, GraphQLClient, GraphQLClient>
+    with $Provider<GraphQLClient> {
+  GraphQLClientProvider._({
+    required GraphQLClientFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'graphQLClientProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$graphQLClientHash();
+
+  @override
+  String toString() {
+    return r'graphQLClientProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<GraphQLClient> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GraphQLClient create(Ref ref) {
+    final argument = this.argument as String;
+    return graphQLClient(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GraphQLClient value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GraphQLClient>(value),
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GraphQLClientProvider && other.token == token;
+    return other is GraphQLClientProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, token.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin GraphQLClientRef on AutoDisposeProviderRef<GraphQLClient> {
-  /// The parameter `token` of this provider.
-  String get token;
-}
+String _$graphQLClientHash() => r'e5988c9b0bc70713f7f53e0bc623fa020f938f68';
 
-class _GraphQLClientProviderElement
-    extends AutoDisposeProviderElement<GraphQLClient> with GraphQLClientRef {
-  _GraphQLClientProviderElement(super.provider);
+final class GraphQLClientFamily extends $Family
+    with $FunctionalFamilyOverride<GraphQLClient, String> {
+  GraphQLClientFamily._()
+    : super(
+        retry: null,
+        name: r'graphQLClientProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  GraphQLClientProvider call(String token) =>
+      GraphQLClientProvider._(argument: token, from: this);
 
   @override
-  String get token => (origin as GraphQLClientProvider).token;
+  String toString() => r'graphQLClientProvider';
 }
-
-String _$authHash() => r'd22ef33f67f6f182eb57e78407683c286ac903d6';
-
-/// See also [Auth].
-@ProviderFor(Auth)
-final authProvider = NotifierProvider<Auth, User?>.internal(
-  Auth.new,
-  name: r'authProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$authHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$Auth = Notifier<User?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
