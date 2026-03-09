@@ -9,26 +9,24 @@ part 'auth.g.dart';
 
 // this riverpod class gives me the state of Firebase User variable
 // where I can get info on the user such as token, name, email etc.
-@Riverpod(keepAlive: true) // the username/token/id variables won't get disposed
+@riverpod 
 class Auth extends _$Auth {
-  String? username;
-  String? token;
-  String? id;
-
   @override
-  User? build() => FirebaseAuth.instance.currentUser;
+  ({User? user, String? token}) build() =>
+      (user: FirebaseAuth.instance.currentUser, token: null);
 
   Future<void> logIn(String email, String password) async {
-    final credential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
+    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
     if (credential.user != null) {
-      state = credential.user!;
-      token = await state?.getIdToken();
-      username = state!.displayName;
+      final token = await credential.user!.getIdToken();
+      state = (user: credential.user, token: token);
+
       debugPrint('STATE: $state');
-      debugPrint('logged in as ${state!.displayName}');
-      id = state!.uid;
-      debugPrint('USER_ID: $id');
+      debugPrint('logged in as ${state.user!.displayName}');
+      debugPrint('USER_ID: ${state.user!.uid}');
     } else {
       debugPrint('no user!');
     }
@@ -38,14 +36,17 @@ class Auth extends _$Auth {
     final credential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
     if (credential.user != null) {
-      username = name; //set the name if user not null
-      state = credential.user!;
-      token = await state?.getIdToken();
-      // will not be available on account creation (state!.displayName)
-      await state!.updateDisplayName(name);
-      debugPrint('logged in as $username');
-      id = state!.uid;
-      debugPrint('USER_ID: $id');
+      final token = await credential.user!.getIdToken();
+
+      // Update display name on the newly created user
+      await credential.user!.updateDisplayName(name);
+      
+      // Get fresh user reference from FirebaseAuth after update
+      final currentUser = FirebaseAuth.instance.currentUser;
+      state = (user: currentUser, token: token);
+
+      debugPrint('logged in as ${state.user!.displayName}');
+      debugPrint('USER_ID: ${state.user!.uid}');
     } else {
       debugPrint('no user!');
     }
@@ -57,5 +58,4 @@ class Auth extends _$Auth {
 }
 
 @riverpod
-GraphQLClient graphQLClient(Ref ref, String token) =>
-    graphQLClientInit(token);
+GraphQLClient graphQLClient(Ref ref, String token) => graphQLClientInit(token);

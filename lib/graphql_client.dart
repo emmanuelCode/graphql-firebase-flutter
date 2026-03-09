@@ -4,9 +4,7 @@ import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 GraphQLClient graphQLClientInit(String token) {
-  final httpLink = HttpLink(
-    'http://localhost:8080/graphql',
-  );
+  final httpLink = HttpLink('http://localhost:8080/graphql');
 
   final authLink = AuthLink(
     getToken: () async =>
@@ -16,10 +14,7 @@ GraphQLClient graphQLClientInit(String token) {
 
   Link link = authLink.concat(httpLink);
 
-  return GraphQLClient(
-    cache: GraphQLCache(),
-    link: link,
-  );
+  return GraphQLClient(cache: GraphQLCache(), link: link);
 }
 
 // original resource for this code

@@ -28,7 +28,6 @@ class UserPosts extends _$UserPosts {
     return _getPosts();
   }
 
-
   Future<void> createPost({
     required String title,
     required String imageID,
@@ -37,8 +36,9 @@ class UserPosts extends _$UserPosts {
     // set the state to loading
     state = const AsyncValue.loading();
 
-    final String addPostMutation =
-        await rootBundle.loadString('lib/graphql_queries/add_post.graphql');
+    final String addPostMutation = await rootBundle.loadString(
+      'lib/graphql_queries/add_post.graphql',
+    );
 
     final MutationOptions options = MutationOptions(
       document: gql(addPostMutation),
@@ -50,7 +50,7 @@ class UserPosts extends _$UserPosts {
           'text': text,
           'dateTime': DateTime.now().toIso8601String(),
           'postOwnerID': userID,
-        }
+        },
       },
     );
 
@@ -77,8 +77,9 @@ class UserPosts extends _$UserPosts {
     // set the state to loading
     state = const AsyncValue.loading();
 
-    final String updatePostMutation =
-        await rootBundle.loadString('lib/graphql_queries/update_post.graphql');
+    final String updatePostMutation = await rootBundle.loadString(
+      'lib/graphql_queries/update_post.graphql',
+    );
 
     final MutationOptions options = MutationOptions(
       document: gql(updatePostMutation),
@@ -94,8 +95,8 @@ class UserPosts extends _$UserPosts {
             'text': text,
             'dateTime': DateTime.now().toIso8601String(),
             // here we don't need to update the ownwer so we omit postOwnerID
-          }
-        }
+          },
+        },
       },
     );
 
@@ -117,17 +118,16 @@ class UserPosts extends _$UserPosts {
     // set the state to loading
     state = const AsyncValue.loading();
 
-    final String addPostMutation =
-        await rootBundle.loadString('lib/graphql_queries/delete_post.graphql');
+    final String addPostMutation = await rootBundle.loadString(
+      'lib/graphql_queries/delete_post.graphql',
+    );
 
     final MutationOptions options = MutationOptions(
       fetchPolicy: FetchPolicy.noCache,
       document: gql(addPostMutation),
       variables: <String, dynamic>{
         // the variable put here must match the query variable ($filter)
-        'filter': {
-          'id': id,
-        }
+        'filter': {'id': id},
       },
     );
 
@@ -147,8 +147,9 @@ class UserPosts extends _$UserPosts {
 
   // get all posts entered
   Future<List<Post>> _getPosts() async {
-    final String getPostsQuery = await rootBundle
-        .loadString('lib/graphql_queries/get_list_posts.graphql');
+    final String getPostsQuery = await rootBundle.loadString(
+      'lib/graphql_queries/get_list_posts.graphql',
+    );
 
     final QueryOptions options = QueryOptions(
       fetchPolicy: FetchPolicy.noCache,

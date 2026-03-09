@@ -12,7 +12,8 @@ part of 'auth.dart';
 @ProviderFor(Auth)
 final authProvider = AuthProvider._();
 
-final class AuthProvider extends $NotifierProvider<Auth, User?> {
+final class AuthProvider
+    extends $NotifierProvider<Auth, ({String? token, User? user})> {
   AuthProvider._()
     : super(
         from: null,
@@ -32,27 +33,37 @@ final class AuthProvider extends $NotifierProvider<Auth, User?> {
   Auth create() => Auth();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(User? value) {
+  Override overrideWithValue(({String? token, User? user}) value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<User?>(value),
+      providerOverride: $SyncValueProvider<({String? token, User? user})>(
+        value,
+      ),
     );
   }
 }
 
-String _$authHash() => r'127cde5849813e37250b05df8633d6be038131be';
+String _$authHash() => r'bc6bc5eef34b191f97ad02f306b504fec4f84260';
 
-abstract class _$Auth extends $Notifier<User?> {
-  User? build();
+abstract class _$Auth extends $Notifier<({String? token, User? user})> {
+  ({String? token, User? user}) build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<User?, User?>;
+    final ref =
+        this.ref
+            as $Ref<
+              ({String? token, User? user}),
+              ({String? token, User? user})
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<User?, User?>,
-              User?,
+              AnyNotifier<
+                ({String? token, User? user}),
+                ({String? token, User? user})
+              >,
+              ({String? token, User? user}),
               Object?,
               Object?
             >;
@@ -117,7 +128,7 @@ final class GraphQLClientProvider
   }
 }
 
-String _$graphQLClientHash() => r'e5988c9b0bc70713f7f53e0bc623fa020f938f68';
+String _$graphQLClientHash() => r'6dd71aae93838421ae71ee2103b3b84d80329320';
 
 final class GraphQLClientFamily extends $Family
     with $FunctionalFamilyOverride<GraphQLClient, String> {

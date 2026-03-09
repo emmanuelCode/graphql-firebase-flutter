@@ -13,7 +13,9 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
 
   InputDecoration _decoration(String value) {
     return InputDecoration(
-        labelText: value, border: const OutlineInputBorder());
+      labelText: value,
+      border: const OutlineInputBorder(),
+    );
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -22,14 +24,16 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
     required String imageID,
     required String text,
     required String title,
-  })? createPost;
+  })?
+  createPost;
 
   final Future<void> Function({
     required String id,
     required String imageID,
     required String text,
     required String title,
-  })? updatePost;
+  })?
+  updatePost;
 
   final Post? currentPost;
 
@@ -82,7 +86,7 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: const Icon(Icons.cancel),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -140,7 +144,7 @@ class AddOrUpdatePostSheet extends ConsumerWidget {
                 },
                 child: const Text('Done'),
               ),
-              SizedBox(height: MediaQuery.of(context).viewInsets.bottom)
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
             ],
           ),
         ),
