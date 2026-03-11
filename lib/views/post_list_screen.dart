@@ -22,7 +22,7 @@ class PostsListScreen extends ConsumerWidget {
     final PageController controller = PageController();
 
     return PopScope(
-      onPopInvoked: (value) async {
+      onPopInvokedWithResult: (didPop, result) async {
         Auth auth = ref.read(authProvider.notifier);
         await auth.logOut();
       },

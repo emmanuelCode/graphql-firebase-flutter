@@ -38,8 +38,8 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
     );
   }
 
-  _setLogin(bool login) {
-    _login = login;
+  void _setLogin(bool login) {
+    setState(() => _login = login);
     //reset text field when changing state
     _textEditName.text = '';
     _textEditEmail.text = '';
@@ -100,6 +100,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(const SnackBar(content: Text('Sign Out')));
+                      _setLogin(true);
                     }
                   },
                   child: Text(_login ? 'Login' : 'SignUp'),
@@ -112,11 +113,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
           _bottomNavigationBarIndex = index;
-          if (index == 0) {
-            setState(() => _setLogin(true));
-          } else {
-            setState(() => _setLogin(false));
-          }
+          _setLogin(index == 0);
         },
         showSelectedLabels: true,
         currentIndex: _bottomNavigationBarIndex,
