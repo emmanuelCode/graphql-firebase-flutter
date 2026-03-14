@@ -23,8 +23,10 @@ class ShowPostScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
             Text(title, style: Theme.of(context).textTheme.titleLarge),
-            Text(created.toIso8601String(),
-                style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              created.toIso8601String(),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             const SizedBox(height: 8),
             Image.network(imageUrl),
             const SizedBox(height: 16),

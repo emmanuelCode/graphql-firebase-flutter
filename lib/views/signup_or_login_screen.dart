@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_graphql/views/post_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,7 @@ class SignUpOrLogin extends ConsumerStatefulWidget {
 class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
   late bool _login;
   late Auth _auth;
+  late User? _user;
 
   final _textEditName = TextEditingController();
   final _textEditEmail = TextEditingController();
@@ -26,15 +28,18 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
     super.initState();
     _login = true;
     _auth = ref.read(authProvider.notifier);
+    _user = ref.read(authProvider).user;
   }
 
   InputDecoration _decoration(String value) {
     return InputDecoration(
-        border: const OutlineInputBorder(), labelText: value);
+      border: const OutlineInputBorder(),
+      labelText: value,
+    );
   }
 
-  _setLogin(bool login) {
-    _login = login;
+  void _setLogin(bool login) {
+    setState(() => _login = login);
     //reset text field when changing state
     _textEditName.text = '';
     _textEditEmail.text = '';
@@ -44,9 +49,7 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Firebase/GraphQL'),
-      ),
+      appBar: AppBar(title: const Text('Firebase/GraphQL')),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -76,19 +79,28 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
                   onPressed: () async {
                     _login
                         ? await _auth.logIn(
-                            _textEditEmail.text, _textEditPass.text)
-                        : await _auth.signUp(_textEditName.text,
-                            _textEditEmail.text, _textEditPass.text);
+                            _textEditEmail.text,
+                            _textEditPass.text,
+                          )
+                        : await _auth.signUp(
+                            _textEditName.text,
+                            _textEditEmail.text,
+                            _textEditPass.text,
+                          );
 
-                    if (_auth.username != null && context.mounted) {
+                    if (_user != null && context.mounted) {
                       await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const PostsListScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PostsListScreen(),
+                        ),
+                      );
                     }
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Sign Out')));
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(const SnackBar(content: Text('Sign Out')));
+                      _setLogin(true);
                     }
                   },
                   child: Text(_login ? 'Login' : 'SignUp'),
@@ -101,19 +113,19 @@ class SignUpOrLoginState extends ConsumerState<SignUpOrLogin> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
           _bottomNavigationBarIndex = index;
-          if (index == 0) {
-            setState(() => _setLogin(true));
-          } else {
-            setState(() => _setLogin(false));
-          }
+          _setLogin(index == 0);
         },
         showSelectedLabels: true,
         currentIndex: _bottomNavigationBarIndex,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.login_outlined), label: 'Login'),
+            icon: Icon(Icons.login_outlined),
+            label: 'Login',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.create_outlined), label: 'SignUp'),
+            icon: Icon(Icons.create_outlined),
+            label: 'SignUp',
+          ),
         ],
       ),
     );

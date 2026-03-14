@@ -11,25 +11,26 @@ class PostsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final auth = ref.watch(authProvider.notifier);
-    final userName = auth.username;
-    final userID = auth.id!;
+    final auth = ref.watch(authProvider);
+    final userName = auth.user!.displayName;
+    final userID = auth.user!.uid;
     final graphqlClient = ref.watch(graphQLClientProvider(auth.token!));
-    final userPosts =
-        ref.watch(userPostsProvider(graphqlClient, userID).notifier);
+    final userPosts = ref.watch(
+      userPostsProvider(graphqlClient, userID).notifier,
+    );
 
     final PageController controller = PageController();
 
     return PopScope(
-      onPopInvoked: (value) async {
+      onPopInvokedWithResult: (didPop, result) async {
         Auth auth = ref.read(authProvider.notifier);
         await auth.logOut();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('$userName\'s Posts'),
-        ),
-        body: ref.watch(userPostsProvider(graphqlClient, userID)).when(
+        appBar: AppBar(title: Text('$userName\'s Posts')),
+        body: ref
+            .watch(userPostsProvider(graphqlClient, userID))
+            .when(
               data: (posts) => posts.isEmpty
                   ? const Center(child: Text('No Posts'))
                   : PageView(
@@ -61,7 +62,7 @@ class PostsListScreen extends ConsumerWidget {
                             text: post.text,
                             created: post.dateTime,
                             imageUrl: post.imageUrl,
-                          )
+                          ),
                       ],
                     ),
               error: (e, s) => Text('Error: $e,$s'),
@@ -73,9 +74,8 @@ class PostsListScreen extends ConsumerWidget {
           child: const Icon(Icons.add),
           onPressed: () => showModalBottomSheet(
             context: context,
-            builder: (context) => AddOrUpdatePostSheet(
-              createPost: userPosts.createPost,
-            ),
+            builder: (context) =>
+                AddOrUpdatePostSheet(createPost: userPosts.createPost),
             isScrollControlled: true,
             useSafeArea: true,
           ),
@@ -94,7 +94,8 @@ class PostCard extends StatelessWidget {
     required String imageID,
     required String text,
     required String title,
-  }) updatePost;
+  })
+  updatePost;
 
   const PostCard({
     super.key,

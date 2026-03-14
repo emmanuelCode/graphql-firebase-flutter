@@ -14,9 +14,7 @@ void main() async {
   updateCertificateForOlderDevice();
 
   // initialize firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -43,9 +41,11 @@ class MyApp extends StatelessWidget {
 // when using Image.network() widget
 void updateCertificateForOlderDevice() async {
   if (!kIsWeb) {
-    ByteData data =
-        await PlatformAssetBundle().load('lib/certificate/lets-encrypt-r3.pem');
-    SecurityContext.defaultContext
-        .setTrustedCertificatesBytes(data.buffer.asUint8List());
+    ByteData data = await PlatformAssetBundle().load(
+      'lib/certificate/lets-encrypt-r3.pem',
+    );
+    SecurityContext.defaultContext.setTrustedCertificatesBytes(
+      data.buffer.asUint8List(),
+    );
   }
 }

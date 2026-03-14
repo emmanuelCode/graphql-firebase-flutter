@@ -66,7 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '841916085039',
     projectId: 'graphql-firebase-flutter',
     storageBucket: 'graphql-firebase-flutter.appspot.com',
-    iosClientId: '841916085039-c1h5e4k5smot5pllouqdveidgvs1adtt.apps.googleusercontent.com',
+    iosClientId:
+        '841916085039-c1h5e4k5smot5pllouqdveidgvs1adtt.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterFirebaseGraphql',
   );
 
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '841916085039',
     projectId: 'graphql-firebase-flutter',
     storageBucket: 'graphql-firebase-flutter.appspot.com',
-    iosClientId: '841916085039-964c0b0qqda6emnpv94q6ki86578guib.apps.googleusercontent.com',
+    iosClientId:
+        '841916085039-964c0b0qqda6emnpv94q6ki86578guib.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterFirebaseGraphql.RunnerTests',
   );
 }
